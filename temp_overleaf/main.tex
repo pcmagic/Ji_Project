@@ -1,0 +1,118 @@
+\documentclass[12pt]{article}
+\usepackage{mathtools}
+\usepackage{comment}
+\usepackage{geometry}
+\usepackage{CJKutf8}
+\usepackage{authblk}
+\usepackage{bm}
+\usepackage{todonotes}
+\usepackage{amssymb}
+\usepackage{booktabs}
+% \usepackage{amsmath}
+% \usepackage{graphicx}
+% \usepackage{subcaption}
+% \usepackage{dcolumn}
+% \usepackage{xcolor}
+\geometry{a4paper,scale=0.85}
+\newcommand{\lb}[1]{{\color{blue}#1}}
+\newcommand{\obs}[1]{{\color{red}#1}}
+\newcommand{\ve}[1]{\ensuremath{\mbox{\boldmath$#1$}}}
+\newcommand\figref{Fig.~\ref}
+\newcommand\sctref{section~\ref}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\renewcommand{\eqref}[1]{equation (\ref{#1})}
+
+\begin{document}
+\section{2019-1-9}
+\begin{figure}[h]
+    \centering
+    \includegraphics[page=1, width=\columnwidth]{temp_overleaf.pdf}
+    \caption{The sketch of what I'm doing. 
+    (a) The coordinate.  
+    (b) The shear flow with strength $\tau_x$.
+    (c) A swimmer with a reference speed $u_{sw}$ in the direction $\bm{p}$. The Total velocity of the swimmer is $\dot{\bm{x}}=u_{sw}\bm{p}+\bm{u}_b$, where $\bm{u}_b$is the background flow, and $\bm{u}_b=(\tau_x z, 0, 0)$ here. 
+    }
+    \label{fig_20190109_1}
+\end{figure}
+
+\textit{Note}: $\dot{\bm{x}}=u_{sw}\bm{p}+\bm{u}_b$ is a rigid body motion for a rigid swimmer, and obviously $u_{sw}\bm{p}$ is rigid body motion, therefore $\bm{u}_b$ must be a rigid body motion, which means that in the Jeffery model we ignore the variation of background flow since we assume the particle is small enough compared with the characteristic scale of the fluid. Another problem is that we do not know the rotation velocity of the swimmer. The rotation velocity is been solved in the Jeffery equation. However, we don't know in the full simulation. Therefore, I assume the swimmer is torque free. The problem now becomes: we know the translational velocity and torque of the swimmer, want to know the force and rotational velocity. 
+\begin{align}
+     \dot{\bm{x}} &= u_{sw}\bm{p}+\bm{u}_b(\bm{x}_0)+\dot{\bm{p}}\times\bm{r}, \label{eq_motion} \\
+     \bm{u}_b(x,y,z) &= (\tau_x z, 0, 0), \\
+     \bm{r} &= \bm{x}-\bm{x}_0, 
+\end{align} 
+Here $\bm{x}_0$ is the center of the swimmer, and $\dot{\bm{p}}$ is the rotational velocity of the swimmer, which is an unknown in the full simulation. For the Jeffery model, $\bm{x}\equiv\bm{x}_0$, and for the full simulation, $\bm{x}$ is arbitrary point on the body of swimmer. 
+
+\textit{Note}: the coupling is almost been ignored under the above assumption since the velocity of the swimmer can be decomposed into two parts
+\begin{equation}
+    \dot{\bm{x}}=\bm{u}_{f}(\bm{x})+\bm{u}_b(\bm{x}) \label{eq_motion}, b
+\end{equation}
+where $\bm{u}_{f}$ is the velocity due to point force on the boundary of swimmer. And in \eqref{eq_motion} we already assumed that $\bm{u}_b(\bm{x})\approx\bm{u}_b(\bm{x}_0)$, therefore, 
+\begin{equation}
+    \bm{u}_{f} \approx  u_{sw}\bm{p}+\dot{\bm{p}}\times\bm{r}
+\end{equation}
+
+We have discussed two kinds of problems before: give external force $\bm{F}$ and torque $\bm{T}$ and want to know translational velocity $\bm{U}$ and rotational velocity $\bm{W}$, or vice verse. Now becomes the third type: know velocity and external torque, and solve external force and spin. 
+\begin{align}
+    (knows) &-> (unknowns), \\
+    (\bm{F}, \bm{T}) &-> (\bm{U}, \bm{W}), \\
+    (\bm{U}, \bm{W}) &-> (\bm{F}, \bm{T}), \\
+    (\bm{U}, \bm{T}) &-> (\bm{F}, \bm{W}), \\
+\end{align} 
+
+
+Now I test the case that swimmer have a constant speed $u_{sw}\equiv 1$. Let $\tau_x\equiv 2$ and the initial direction $\bm{p}\equiv(1,0,0)$ and initial location $\bm{x}_0(t=0)=(0,0,z_0)$. For the full simulation, $r_1\equiv 1$ therefore the ratio of swimmer $\alpha=\dfrac{1}{r_2}$. I tested $15$ cases, i.e. $\alpha=10, 1, 1/9$ and $z_0=-1,-0.5,0,0.5,1$. 
+
+Here are some typically results. For all the cases, the maximum iterative steps of Jeffery model is two times as much as the maximum iterative steps of the full simulation. 
+\begin{figure}[h]
+    \centering
+    \includegraphics[page=2, width=\columnwidth]{temp_overleaf.pdf}
+    \caption{(left) $\alpha=10,z_0=-1$
+    (middle) $\alpha=10,z_0=0$
+    (right) $\alpha=10,z_0=1$
+    }
+    \label{fig_20190109_2}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[page=3, width=\columnwidth]{temp_overleaf.pdf}
+    \caption{(left) $\alpha=1,z_0=-1$
+    (middle) $\alpha=1,z_0=0$
+    (right) $\alpha=1,z_0=1$
+    }
+    \label{fig_20190109_3}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[page=4, width=\columnwidth]{temp_overleaf.pdf}
+    \caption{(left) $\alpha=1/9,z_0=-1$
+    (middle) $\alpha=1/9,z_0=0$
+    (right) $\alpha=1/9,z_0=1$
+    }
+    \label{fig_20190109_4}
+\end{figure}
+\figref{fig_20190109_2}, \figref{fig_20190109_3} and \figref{fig_20190109_4} verified that the coupling is rare. But there exists a phase difference error for $\alpha=1/9$. 
+
+
+\cleardoublepage
+\section{2019-01-22}
+(In the following, swimmer==ecoli)
+what is the given background velocity of the fluid for a full simulation? 
+currently for a active ellipse with given speed, the background velocity is the fluid velocity at the center of the ellipse. 
+But the velocity of a passive ellipse is not the velocity at it's center. Therefore, a reasonable choice of $\bm{u}_b$ is the velocity of passive ellipse. $\bm{u}_b=\bm{u}_{pass}$
+
+The difference between $\bm{u}_b(\bm{x}_0)$ and $\bm{u}_{pass}$ is small for a ellipse. Tha laplace of the fluid field $\Delta^2\bm{u}_b$ is proportional to this different. (In fact, in shear flow, $\Delta^2\bm{u}_b=0$ and $\bm{u}_b(\bm{x}_0) \equiv \bm{u}_{pass}$). 
+But for a ecoli with tail, there exists another kind of error and the difference is significant. This is because the helical tail is asymmetric, and leads to 1) the rotation of a passive (died) ecoli, and 2) a forward velocity of the ecoli. 
+So $\bm{u}_b(\bm{x}_0) \neq \bm{u}_{pass}$, let $\bm{u}_{add} = \bm{u}_{pass} - \bm{u}_b(\bm{x}_0)$. Qualitatively, a longer tail increases this difference. \textbf{Short tail is better.} This different can not be neglect, and should be consider at the control equation of the Jeffery model. 
+
+For a asymmetrical ecoli, another problem is the direction of the self propel velocity is not same as the direction of the ecoli. This difference is also due to the asymmetric of the tail. a longer tail can reduce this difference. \textbf{Long tail is better.} But this difference maybe eliminated (at least can be weaken) for a phase averange. For a very short tail, the spin must be very fast, therefore, the phase averange will have a good agree. In such condition, \textbf{Very short tail is better.}
+
+The tail changes the torque free condition. This additional torque influences the rotational velocity of the ecoli, (normally reduce the rotational velocity). A longer tail increases this effect. \textbf{Short tail is better. }
+
+Now, maybe we can write the govern equations like this (InPPT)
+as far as I know, No body down like this before. 
+
+The directions $\bm{n}_{sp} \neq \bm{n}_{sw}$, this error decrease with the lengthen of the tail. 
+
+$\bm{u}_{add}$ is necessary if the background flow is strong. 
+\end{document}
