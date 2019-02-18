@@ -1,0 +1,514 @@
+% Copyright 2004 by Till Tantau <tantau@users.sourceforge.net>.
+%
+% In principle, this file can be redistributed and/or modified under
+% the terms of the GNU Public License, version 2.
+%
+% However, this file is supposed to be a template to be modified
+% for your own needs. For this reason, if you use this file as a
+% template and not specifically distribute it as part of a another
+% package/program, I grant the extra permission to freely copy and
+% modify this file as you see fit and even to delete this copyright
+% notice. 
+
+\documentclass{beamer}
+\usepackage{mathtools}
+\usepackage{comment}
+\usepackage{CJKutf8}
+\usepackage{bm}
+\usepackage{todonotes}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{dcolumn}
+\usepackage{xcolor}
+\usepackage{upgreek}
+\newcommand{\lb}[1]{{\color{blue}#1}}
+\newcommand{\obs}[1]{{\color{red}#1}}
+\newcommand{\ve}[1]{\ensuremath{\mbox{\boldmath$#1$}}}
+\newcommand\figref{Fig.~\ref}
+\newcommand\sctref{section~\ref}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\renewcommand{\eqref}[1]{equation (\ref{#1})}
+
+% There are many different themes available for Beamer. A comprehensive
+% list with examples is given here:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+% You can uncomment the themes below if you would like to use a different
+% one:
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{boxes}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{default}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+
+\title{Navigation in flows with complex boundaries by using Reinforcement Learning}
+
+% A subtitle is optional and this may be deleted
+\subtitle{None}
+
+\author{Zhang Ji\inst{1}}
+% - Give the names in the same order as the appear in the paper.
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[CSRC] % (optional, but mostly needed)
+{
+  \inst{1}%
+  Beijing Computational Science Research Center
+}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date{weekly report, 2018~2019}
+% - Either use conference name or its abbreviation.
+% - Not really informative to the audience, more for people (including
+%   yourself) who are reading the slides online
+
+\subject{Computational Biophysics Science}
+% This is only inserted into the PDF information catalog. Can be left
+% out. 
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+    \begin{frame}{Outline}
+        \tableofcontents[currentsection,currentsubsection]
+    \end{frame}
+}
+
+% Let's get started
+\begin{document}
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+	\tableofcontents
+	% You might wish to add the option [pausesections]
+\end{frame}
+
+\section{2018/12/14, 20}
+\subsection{nothing}
+\begin{frame}{The Jeffery equation}
+  \begin{align}
+		\dot{p}_n   & = \Omega_{nj}p_j + \lambda(S_{nj}p_j-p_np_kS_{kj}p_j) \\
+		\Omega_{nj} & = \frac{1}{2}(u_{i,j}-u_{j,i})                        \\
+		S_{nj}      & = \frac{1}{2}(u_{i,j}+u_{j,i})
+  \end{align}
+
+  \cite{jeffery1922motion,chevillard2013orientation,parsa2012rotation,einarsson2015angular}
+\end{frame}
+
+\begin{frame}{The Jeffery equation}
+  \begin{equation}
+		\dot{p}_n = \Omega_{nj}p_j + \lambda(S_{nj}p_j-p_np_kS_{kj}p_j), 
+  \end{equation}
+  meaning:\cite{einarsson2015angular}
+  \begin{itemize}
+    \item The first termmeans that the particle is rotated by the local flow vorticity, and that this rotation is independent of the particle shape.
+    \item The second termmeans that the local rate-of-strain attracts the particle axis to the strongest eigendirection of $S_{nj}$.
+    \item The strength of the attraction is affected by the particle shape. The more elongated an axis is, the stronger the attraction becomes. 
+    \item $S_{nj}p_j$ is the stress on the $\bm{p}$ direction. 
+    \item The non-linear part $p_np_kS_{kj}p_j$ s simply the
+    stretching component of the strain. 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{origion of equation}
+  % \begin{equation}
+  %   \begin{cases}
+  %     \nabla\cdot\bm{u} &= 0, \\
+  %     \mu\triangle\bm{u} &= \nabla p-\bm{f}\delta(\bm{x}_f), 
+  %   \end{cases}
+  % \end{equation}
+  \begin{equation}
+    \begin{cases}
+      u_{i, j} &= 0, \\
+      \mu u_{i,jj} &= p_{,i} - f_i \delta(\bm{x}_f), 
+    \end{cases}
+  \end{equation}
+  \begin{equation}
+    u_i(\bm{x}) = S_{nj}x_j + \Omega_{nj}x_j, 
+  \end{equation}
+
+  Assumptions: 
+  \begin{itemize}
+    \item apart from the disturbance produced in the immediate neighbourhood of the particle; 
+    \item varies in space on a scale which is large compared with the dimenisions of the particle; 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{set up of the problem}
+  To discribe a microswimmer:
+  \begin{itemize}
+    \item head: major and minor radii of ellipse $rs_1$, $rs_2$;
+    \item tail: major and minor radii of helix $rt_1$, $rt_2$, pitch $\lambda$ and $\#$ of pitch $n$;
+    \item motion constant, one of: $\omega_t$, $\omega_m=\omega_h-\omega_t$, $F_t$, $T_m=T_h=-T_t$, $v_s$, (power: $p_m=\omega_m T_m$); 
+    \item translational and rotational velocities at infinite space: $u_{inf}$ and $\omega_{inf}$; 
+  \end{itemize}
+  To discribe a shear flow:
+  \begin{itemize}
+    \item shear rate: $\uptau$; 
+    \item shear norm: $\bm{t}_{shear}=\bm{z}$; 
+    \item shear direction: $\bm{n}_{shear}=\bm{x}$; 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{parameter selection}
+  \begin{itemize}
+    \item let: $rs_2 \equiv 1$, normalize $rs_1$, $rt_1$, $rt_2$, $\lambda$; 
+    \item let: $\omega_m \equiv 1$, normalize $u_{inf}$, $\omega_{inf}$, $\uptau$; 
+    \item let: $\alpha = \dfrac{rs_1}{rs_2}$, $\beta_1 = \dfrac{rs_1}{n \lambda}$, $\beta_2 = \dfrac{\uptau}{\omega_m}$
+    \item Jeffery model only includes $\alpha$, 
+    \item $\beta_1 \nearrow\ \leadsto$ ellipse; 
+    \item $\beta_2 \nearrow\ \leadsto$ without spin; 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \begin{figure}[htb]
+    \centering
+    \includegraphics[width=\columnwidth]{fig_20181220_traject.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \begin{figure}[htb]
+    \centering
+    \includegraphics[width=\columnwidth]{fig_20181220_traject2.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \begin{figure}[htb]
+    \centering
+    \includegraphics[width=\columnwidth]{fig_20181220_traject3.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Try equation}
+  \begin{equation}
+    \dot{x}_i=\norm{v_s}p_i + \bm{u}^{b}_i
+  \end{equation}
+\end{frame}
+
+\section{2019/02/11, passive and active ellipse}
+\subsection{nothing}
+\begin{frame}{The Jeffery + motion equation}
+  \begin{align}
+		\dot{p}_n &= \Omega_{nj}p_j + \lambda(S_{nj}p_j-p_np_kS_{kj}p_j) \\
+		\Omega_{ij} &= \dfrac{1}{2}(u_{i,j}-u_{j,i})                        \\
+    S_{ij} &= \dfrac{1}{2}(u_{i,j}+u_{j,i}) \\
+    \lambda &= \dfrac{\alpha^2-1}{\alpha^2+1}, \alpha = \dfrac{rs_1}{rs_2} \\
+    \dot{x}_i &= \norm{v_s}p_i + ub_i \\
+    x_i(t) &= x_i(0) + \int_{0}^{t}\dot{x}_idt \\
+    p_i(t) &= p_i(0) + \int_{0}^{t}\dot{p}_idt, 
+  \end{align}
+\end{frame}
+
+\begin{frame}{The Stokes Equations}
+  \begin{align}
+    \mu u_{i,jj} &= p_{,i} - f_i \delta(\bm{x}_f) \\ 
+    u_{i, j} &= 0 \\
+    Some\ &boundary\ conditions...
+  \end{align}
+\end{frame}
+
+\begin{frame}{Case 1: passive ellipse}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=1,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \caption[caption]{Geometry of a ellipse. }
+    \label{fig_problem1}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Case 1: passive ellipse, results}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=2,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem2}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Case 1: passive ellipse, results}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=3,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem3}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Case 1: passive ellipse, results}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=4,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem4}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Case 1: passive ellipse, results}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=5,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem5}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Case 2: active ellipse}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=6,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \caption[caption]{Geometry of a active ellipse. }
+    \label{fig_problem6}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Case 2: passive ellipse, results}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=7,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem7}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Case 2: passive ellipse, results}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=8,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem8}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Case 2: passive ellipse, results}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=9,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Case 2: passive ellipse, results}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=10,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem9}
+  \end{figure}
+\end{frame}
+
+\section{2019/02/11, passive helix}
+\subsection{nothing}
+\begin{frame}{Case passive helix}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=12,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem10}
+  \end{figure}
+  \cite{fu2012bacterial,fu2009separation}
+\end{frame}
+
+\begin{frame}{Case passive helix}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=13,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem11}
+  \end{figure}
+  \cite{fu2012bacterial,fu2009separation}
+\end{frame}
+
+\begin{frame}{Case passive helix}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=14,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem12}
+  \end{figure}
+  \cite{fu2012bacterial,fu2009separation}
+\end{frame}
+
+\begin{frame}{Case passive helix}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=15,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem13}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Case passive helix}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=16,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem14}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Case passive helix}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=17,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem15}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Case passive helix}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=18,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem16}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Case passive helix}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=19,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem17}
+  \end{figure}
+\end{frame}
+
+\section{2019/02/11, Passive and active swimmer}
+\subsection{nothing}
+\begin{frame}{Passive and active swimmer}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=33,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem18}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Passive swimmer}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=34,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem19}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{active swimmer}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=35,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem20}
+  \end{figure}
+\end{frame}
+
+\section{2019/02/11, Try to make table}
+\subsection{nothing}
+\begin{frame}{Try to make table}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=21,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem21}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Try to make table}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=22,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem22}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Try to make table}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=23,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem23}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Try to make table}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=24,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem24}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Try to make table}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=25,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem25}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Try to make table}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=26,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem26}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Try to make table}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=27,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem27}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Try to make table}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=28,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem28}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Try to make table}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=29,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem29}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Try to make table}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=30,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem30}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Try to make table}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=31,width=0.8\textwidth,height=0.8\textheight,keepaspectratio]{fig_Navigation.pdf}
+    \label{fig_problem31}
+  \end{figure}
+\end{frame}
+
+
+\bibliographystyle{apalike}
+\bibliography{weekly_ref.bib}
+\end{document}
+
+
