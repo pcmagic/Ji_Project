@@ -506,6 +506,143 @@
   \end{figure}
 \end{frame}
 
+\section{2019/02/18, Collection results}
+\subsection{nothing}
+\begin{frame}{Coordinate definition}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=1,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Ellipse in shear flow, Full simulation vs Jeffery model. }
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=2,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Single helix in shear flow}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=3,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{double helix in shear flow}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=4,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{double helix, example}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=5,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{treble helix in shear flow}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=6,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{quadruple helix in shear flow}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=7,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Single helix in shear flow, different ini location}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=8,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Single helix in shear flow, different ini location}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=9,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Single helix in shear flow, different ini location}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=10,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Single helix in shear flow, different ini location}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=11,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Single helix in shear flow, different ini location}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=12,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Single helix in shear flow, different ini location}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=13,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Single helix in shear flow, different ini location}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=14,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{One question}
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[page=21,width=0.9\textwidth,height=0.9\textheight,keepaspectratio]{fig_20190218.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{make lookup table}
+  A 2D+1D interpolation produce is used. 
+
+  1). For $\psi=(0,  0.62832,  1.25664,  1.88496, $ 
+  $2.51327, 3.14159,  3.76991,  4.39823, $
+  $5.02655,  5.65487)$ A 2D interpolate is performed in the $\theta$, $\phi$ space. 
+
+  2). Then, a 1D interpolate in performed in the $\psi$ space.  
+\end{frame}
+
+\begin{frame}{Interpolation works well}
+  $(\theta, \phi, \psi)=0.587 0.173 0.636$
+
+  interpolate 
+  $(u_x, u_y, u_z, \omega_x, \omega_y, \omega_z)=(-0.00381 -0.0167   0.00426  0.02086  0.56157 -0.01479)$
+
+  simulation 
+  $(u_x, u_y, u_z, \omega_x, \omega_y, \omega_z)=(-0.003812, -0.016702, 0.004252, 0.020843, 0.561565, -0.014813)$
+
+  I tested 100 randome cases, max error is $3\%$ and averange error is $0.7\%$
+\end{frame}
+
+\begin{frame}{How to make a image from other quadrant}
+  The table cover angles in the range 
+  $\theta in (0, 0.5\pi)$, $\phi in (0, \pi)$, $\psi in (0, 2*\pi)$
+  
+  What about $(\theta, \phi, \psi)$ out of this range?
+
+\end{frame}
+
 
 \bibliographystyle{apalike}
 \bibliography{weekly_ref.bib}
